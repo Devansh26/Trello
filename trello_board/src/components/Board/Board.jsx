@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
-// import { useSnackbar } from "react-simple-snackbar";
+import { useSnackbar } from "react-simple-snackbar";
 
 import styles from "./Board.module.css";
 import { List } from "../List/List";
@@ -12,9 +12,9 @@ import { addList, moveCard, updateListTitle, resetBoard } from "../../redux/boar
 const Board = () => {
   const dispatch = useDispatch();
   const boardData = useSelector((state) => state.board);
- // const { lists, modal, } = boardData;
+  const { lists, modal, } = boardData;
   const [loading, setLoading] = useState(true);
-  //const [openSnackbar] = useSnackbar({ position: "top-center" });
+  const [openSnackbar] = useSnackbar({ position: "top-center" });
 
   useEffect(() => {
     setLoading(false);
