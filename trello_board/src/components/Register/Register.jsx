@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import { useSnackbar } from "react-simple-snackbar";
 
 import styles from "./Register.module.css";
-import { registerUser } from "../../utilities/networkRequests";
 
 const initialState = {
   name: "",
@@ -18,30 +17,29 @@ const Register = () => {
   });
 
   const handleForm = (e) => {
-    let { name, value } = e.target;
-
-    setForm({ ...form, [name]: value });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    registerUser(form)
-      .then(({ message }) => {
-        openSnackbar(message + ". Please login");
-        setForm(initialState);
-      })
-      .catch((error) => {
-        if (error.response) {
-          openSnackbar(
-            error.response.data.message
-              ? error.response.data.message
-              : error.response.data
-          );
-        } else {
-          openSnackbar(error.message);
-        }
-      });
+    // Basic validation (replace with more robust validation)
+    if (!form.name || !form.email || !form.password) {
+      openSnackbar("Please fill in all fields.");
+      return;
+    }
+
+    if (form.password.length < 6) {
+      openSnackbar("Password should be at least 6 characters long.");
+      return;
+    }
+
+    // Store user data in local storage
+    localStorage.setItem("user", JSON.stringify(form));
+
+    openSnackbar("Registration successful. Please login.");
+    setForm(initialState);
+    history.push("/");
   };
 
   const handleNavigateToLogin = () => {
