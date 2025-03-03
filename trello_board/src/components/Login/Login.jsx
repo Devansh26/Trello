@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import { useSnackbar } from "react-simple-snackbar";
 
 import styles from "./Login.module.css";
-import { loginUser } from "../../utilities/networkRequests";
 import { getItem, setItem } from "../../utilities/localStorage";
 
 let initialState = {
@@ -34,26 +33,19 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    loginUser(form)
-      .then(({ data }) => {
-        let { token, user_details } = data;
-        if (token) {
-          setItem("token", token);
-          setItem("user_details", user_details);
-          history.push("/home");
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          openSnackbar(
-            error.response.data.message
-              ? error.response.data.message
-              : error.response.data
-          );
-        } else {
-          openSnackbar(error.message);
-        }
-      });
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (
+        storedUser &&
+        form.email === storedUser.email &&
+        form.password === storedUser.password
+    ) {
+      setItem("token", "123456");
+      openSnackbar("Login successful!");
+      history.push("/home");
+    } else {
+      openSnackbar("Invalid credentials.");
+    }
   };
 
   const handleNavigateToRegister = () => {
